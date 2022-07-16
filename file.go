@@ -8,6 +8,21 @@ import (
 	"path"
 )
 
+//SaveFile 读取文件流保存到本地
+func SaveFile(rd io.Reader, destPath string, fileName string) (*os.File, error) {
+	destPath = MakePath(destPath, 0766)
+
+	file, err := os.Create(destPath + fileName)
+	if err != nil {
+		return nil, err
+	}
+	// 获得文件的writer对象
+	writer := bufio.NewWriter(file)
+	io.Copy(writer, rd)
+	file.Seek(0, 0)
+	return file, nil
+}
+
 //FetchFile 拉取远程图片
 func FetchFile(fileUrl string, destPath string, fileName string) (*os.File, error) {
 	destPath = MakePath(destPath, 0766)
